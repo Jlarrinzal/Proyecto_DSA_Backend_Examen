@@ -5,9 +5,7 @@ import edu.upc.dsa.GameManager;
 import edu.upc.dsa.GameManagerImpl;
 import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.models.Usuario;
-import edu.upc.dsa.models.dto.CredencialTO;
-import edu.upc.dsa.models.dto.TablaCompra;
-import edu.upc.dsa.models.dto.UsuarioTO;
+import edu.upc.dsa.models.dto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -38,6 +36,10 @@ public class GameService {
             this.manager.addObjeto("Monitor","144Hz",99.99,"https://img.freepik.com/vector-premium/monitor-computadora-realista_88272-327.jpg");
             this.manager.addObjeto("Raton","inalambrico",20.00,"https://www.info-computer.com/156049-medium_default/logitech-lgt-m90-1000-dpi-gris-q.jpg");
             this.manager.addObjeto("Teclado","Retroiluminado",50.00,"https://www.shutterstock.com/image-photo/computer-keyboard-isolated-on-white-260nw-222047851.jpg");
+            this.manager.addRanking("Jose","hoy",10,"No");
+            this.manager.addRanking("Cristian","hoy",9,"No");
+            this.manager.addFaq("¿Esto funciona?","Puede");
+
         }
     }
 
@@ -210,6 +212,78 @@ public class GameService {
         List<TablaCompra> listaObjetoUsuario = this.manager.listaObjetosCompradosPorUsuarioORM(correo);
         GenericEntity<List<TablaCompra>> entity = new GenericEntity<List<TablaCompra>>(listaObjetoUsuario) {};
         return Response.status(201).entity(entity).build()  ;
+    }
+
+    //Añadir Denuncia
+    @POST
+    @ApiOperation(value = "Añadir denuncia", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Denuncia.class),
+            @ApiResponse(code = 500, message = "Validation Error")
+
+    })
+
+    @Path("/añadirDenuncia")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registrarDenuncia(Denuncia denuncia) {
+
+        //this.manager.registrarUsuario(usuario.getNombre(), usuario.getCorreo(), usuario.getPassword());
+        this.manager.añadirDenuncia(denuncia.getFecha(), denuncia.getNombre(), denuncia.getComentario());
+        return Response.status(201).entity(denuncia).build();
+    }
+
+    //lista Faq
+    @GET
+    @ApiOperation(value = "lista Faq", notes = "asdas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Faq.class, responseContainer="List"),
+    })
+    @Path("/getlistaFAQ")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getlistaFAQ() {
+        List<Faq> faq = this.manager.listadeFaq();
+        GenericEntity<List<Faq>> entity = new GenericEntity<List<Faq>>(faq) {};
+        return Response.status(201).entity(entity).build();
+    }
+
+    //lista Ranking
+    @GET
+    @ApiOperation(value = "Ranking", notes = "asdas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = UsuarioMin.class, responseContainer="List"),
+    })
+    @Path("/getRanking")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRanking() {
+        List<UsuarioMin> um = this.manager.listaRanking();
+        GenericEntity<List<UsuarioMin>> entity = new GenericEntity<List<UsuarioMin>>(um) {};
+        return Response.status(201).entity(entity).build();
+    }
+
+    //lista Prueba
+    @GET
+    @ApiOperation(value = "Prueba", notes = "asdas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = UsuarioMin.class, responseContainer="List"),
+    })
+    @Path("/getPrueba")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPrueba() {
+        List<UsuarioMin> um = this.manager.listaRanking();
+        GenericEntity<List<UsuarioMin>> entity = new GenericEntity<List<UsuarioMin>>(um) {};
+        return Response.status(201).entity(entity).build();
+    }
+    //Idioma
+    @PUT
+    @ApiOperation(value = "Idioma", notes = "asdas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Idioma.class),
+    })
+    @Path("/putIdioma")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putIdioma(Idioma idioma) {
+        this.manager.añadirIdioma(idioma.getCorreo(), idioma.getIdioma());
+        return Response.status(201).build();
     }
 
     //lista objetos ordenados ascendentemente

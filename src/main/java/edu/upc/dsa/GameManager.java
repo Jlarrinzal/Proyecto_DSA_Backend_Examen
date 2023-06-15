@@ -2,7 +2,9 @@ package edu.upc.dsa;
 
 import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.models.Usuario;
+import edu.upc.dsa.models.dto.Faq;
 import edu.upc.dsa.models.dto.TablaCompra;
+import edu.upc.dsa.models.dto.UsuarioMin;
 
 import java.util.List;
 
@@ -41,5 +43,13 @@ public interface GameManager {
     public void clear();
 
     public int size();
+
+    public void añadirDenuncia(String fecha, String nombre, String comentario);
+    public void addRanking(String nickname, String fecha, int puntos, String avatar);
+    public List<UsuarioMin> listaRanking();
+    public List<Faq> listadeFaq();
+    public void addFaq(String pregunta, String respuesta);
+
+    public void añadirIdioma(String correo, String idioma);
 
 }

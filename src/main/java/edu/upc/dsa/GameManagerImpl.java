@@ -2,8 +2,7 @@ package edu.upc.dsa;
 
 import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.models.Usuario;
-import edu.upc.dsa.models.dto.TablaCompra;
-import edu.upc.dsa.models.dto.UsuarioTO;
+import edu.upc.dsa.models.dto.*;
 import edu.upc.eetac.dsa.FactorySession;
 import edu.upc.eetac.dsa.Session;
 import edu.upc.eetac.dsa.IUserDAO;
@@ -12,6 +11,7 @@ import edu.upc.eetac.dsa.model.User;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +21,8 @@ public class GameManagerImpl implements GameManager {
     protected List<Usuario> listaUsuarios;
     HashMap<String, Objeto> Objetos;
     protected List<Objeto> listaObjetos;
+    protected List<Faq> listaFaq;
+    protected List<UsuarioMin> listaRanking;
     private static GameManager instance;
     final static Logger logger = Logger.getLogger(GameManagerImpl.class);
 
@@ -29,6 +31,8 @@ public class GameManagerImpl implements GameManager {
         this.Usuarios = new HashMap<>();
         this.listaObjetos = new ArrayList<>();
         this.Objetos = new HashMap<>();
+        this.listaFaq = new ArrayList<>();
+        this.listaRanking = new ArrayList<>();
     }
 
     public static GameManager getInstance() {
@@ -431,6 +435,56 @@ public class GameManagerImpl implements GameManager {
     @Override
     public int size() {
         return this.listaObjetos.size();
+    }
+
+    @Override
+    public void añadirDenuncia(String fecha, String nombre, String comentario) {
+        Session session = null;
+        try {
+            session = FactorySession.openSession();
+            Denuncia u = new Denuncia(fecha, nombre, comentario);
+            session.save(u);
+        }
+        catch (Exception e) {
+            // LOG
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void addRanking(String nickname, String fecha, int puntos, String avatar) {
+        this.listaRanking.add(new UsuarioMin(nickname, fecha, puntos, avatar));
+        logger.info("Se han añadido los usuarios");
+    }
+
+    @Override
+    public List<UsuarioMin> listaRanking() {
+        this.listaRanking.sort(new Comparator<UsuarioMin>() {
+            public int compare(UsuarioMin o1, UsuarioMin o2) {
+                return Double.compare(o2.getPuntos(), o1.getPuntos());
+            }
+        });
+        logger.info("Lista ordenada por puntos ascendente: " + listaRanking.toString());
+        return listaRanking;
+    }
+
+    @Override
+    public List<Faq> listadeFaq() {
+        logger.info("Faq: " + listaFaq.toString());
+        return this.listaFaq;
+    }
+
+    @Override
+    public void addFaq(String pregunta, String respuesta) {
+        this.listaFaq.add(new Faq(pregunta, respuesta));
+        logger.info("Se han añadido las FAQ");
+    }
+
+    @Override
+    public void añadirIdioma(String correo, String idioma) {
+
     }
 
 
